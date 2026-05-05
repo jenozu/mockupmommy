@@ -1,0 +1,8 @@
+﻿node_modules/
+backend/node_modules/
+.env
+*.log
+__pycache__/
+*.pyc
+backend/uploads/
+backend/output/
