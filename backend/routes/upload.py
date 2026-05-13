@@ -5,7 +5,8 @@ import shutil
 from typing import List
 import aiofiles
 from pathlib import Path
-from services.photoshop_service import PhotoshopService
+import renderers  # noqa: F401 — triggers renderer registration
+import renderers.registry as renderer_registry
 from pydantic import BaseModel
 from enum import Enum
 
@@ -81,17 +82,19 @@ async def upload_files(
             await out_file.write(template_content)
 
         try:
-            # Initialize PhotoshopService and generate mockup
-            photoshop_service = PhotoshopService()
-            mockup_path = await photoshop_service.generate_mockup(
-                str(design_path),
-                str(template_path)
+            renderer = renderer_registry.get("photoshop")
+            result = await renderer.render_async(
+                renderer_config={"template_path": str(template_path)},
+                design_path=design_path,
             )
-                
+
+            if not result.success:
+                raise Exception(result.error)
+
             return FileResponse(
-                mockup_path,
+                str(result.output_path),
                 media_type="image/png",
-                filename=Path(mockup_path).name
+                filename=result.output_path.name,
             )
 
         finally:

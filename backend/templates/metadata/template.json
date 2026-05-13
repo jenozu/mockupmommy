@@ -1,0 +1,10 @@
+{
+  "id": "template",
+  "name": "Default Photoshop Template",
+  "category": "mvp",
+  "renderer": "photoshop",
+  "renderer_config": {
+    "template_path": "templates/template.psd",
+    "output_format": "png"
+  }
+}
